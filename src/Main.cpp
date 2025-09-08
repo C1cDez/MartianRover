@@ -2,15 +2,94 @@
 
 #include <SFML/Graphics.hpp>
 
-int main()
+class Game
 {
-	sf::RenderWindow window{ sf::VideoMode{ 800, 600 }, "Martian Rover", sf::Style::Titlebar | sf::Style::Close };
-	sf::Event e;
-	while (window.isOpen())
+public:
+	Game(unsigned int pWidth, unsigned int pHeight, unsigned int pFPS);
+
+	Game(const Game&) = delete;
+	Game& operator=(const Game&) = delete;
+
+	void init();
+	void run();
+	void finish();
+
+	void pollEvents();
+
+	void update();
+	void render();
+
+	~Game();
+
+private:
+	bool mRunning;
+	unsigned int mScreenWidth, mScreenHeight;
+	unsigned int mFPS;
+	sf::RenderWindow* mWindow;
+	sf::Event mEvent;
+};
+
+Game::Game(unsigned int pWidth, unsigned int pHeight, unsigned int pFPS)
+{
+	mRunning = false;
+	mScreenWidth = pWidth;
+	mScreenHeight = pHeight;
+	mFPS = pFPS;
+	mWindow = new sf::RenderWindow{ sf::VideoMode{ mScreenWidth, mScreenHeight }, 
+		"Martian Rover", sf::Style::Titlebar | sf::Style::Close };
+	mEvent = sf::Event{};
+}
+void Game::init()
+{
+	mRunning = true;
+	mWindow->setFramerateLimit(mFPS);
+}
+void Game::run()
+{
+	while (mRunning)
 	{
-		while (window.pollEvent(e))
+		pollEvents();
+
+		mWindow->clear();
+		update();
+		render();
+		mWindow->display();
+	}
+}
+void Game::finish()
+{
+}
+void Game::pollEvents()
+{
+	while (mWindow->pollEvent(mEvent))
+	{
+		if (mEvent.type == sf::Event::Closed)
 		{
-			if (e.type == sf::Event::Closed) window.close();
+			mRunning = false;
+			mWindow->close();
 		}
 	}
+}
+
+Game::~Game()
+{
+	delete mWindow;
+}
+
+void Game::update()
+{
+	
+}
+void Game::render()
+{
+
+}
+
+
+int main()
+{
+	Game game{ 1200, 800, 60 };
+	game.init();
+	game.run();
+	game.finish();
 }
