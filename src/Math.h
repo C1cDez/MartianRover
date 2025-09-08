@@ -9,11 +9,11 @@ struct Vec3i
 	int x, y, z;
 };
 
-struct Vec2f
+struct Vec2d
 {
-	float x, y;
+	double x, y;
 };
-struct Vec3f
+struct Vec3d
 {
-	float x, y, z;
+	double x, y, z;
 };
