@@ -37,7 +37,6 @@ Game::Game(unsigned int pWidth, unsigned int pHeight, unsigned int pFPS)
 	mFPS = pFPS;
 	mWindow = new sf::RenderWindow{ sf::VideoMode{ mScreenWidth, mScreenHeight }, 
 		"Martian Rover", sf::Style::Titlebar | sf::Style::Close };
-	mEvent = sf::Event{};
 }
 void Game::init()
 {
@@ -59,6 +58,11 @@ void Game::run()
 void Game::finish()
 {
 }
+Game::~Game()
+{
+	delete mWindow;
+}
+
 void Game::pollEvents()
 {
 	while (mWindow->pollEvent(mEvent))
@@ -68,14 +72,13 @@ void Game::pollEvents()
 			mRunning = false;
 			mWindow->close();
 		}
+		if (mEvent.type == sf::Event::KeyPressed && mEvent.key.code == sf::Keyboard::Escape)
+		{
+			mRunning = false;
+			mWindow->close();
+		}
 	}
 }
-
-Game::~Game()
-{
-	delete mWindow;
-}
-
 void Game::update()
 {
 	
