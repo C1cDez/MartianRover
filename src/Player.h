@@ -2,26 +2,18 @@
 
 #include "Math.h"
 
-class Player {
+class Player
+{
 public:
 	Player();
 
-	Vec2f getPos() const;
-	void setPos(const Vec2f& pPos);
+	Vec2i getPos() const;
+	void setPos(const Vec2i& pPos);
 
-	void move();
-
-	int getHealth() const;
-	void setHealth(int pHealth);
-
-	int getPower() const;
-	void setPower(int pPower);
+	void move(const Vec2i& pDV);
 
 private:
-	Vec2f mPos;
-	Vec2f mDisplacement;
-	int mHealth;
-	int mPower;
-	float mSpeed;
-	bool mMoving;
+	Vec2i mPos;
+	unsigned int mHealth;
+	unsigned int mPower;
 };

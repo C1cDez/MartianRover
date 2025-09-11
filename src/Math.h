@@ -38,6 +38,6 @@ static float quadEaseOut(float a, float b, float t)
 }
 static float quadEaseInOut(float a, float b, float t)
 {
-	if (t <= 0.5) return quadEaseIn(a, b, t);
-	else return quadEaseOut(a, b, t);
+	if (t <= 0.5) return 2 * quadEaseIn(a, b, t);
+	else return 2 * quadEaseOut(a, b, t);
 }
