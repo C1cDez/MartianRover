@@ -1,24 +1,47 @@
 #include "Player.h"
+
 #include <cmath>	
 
 
-Player::Player(const Vec2f& _pos, short _tile_size) {
-	pos = _pos;
-
-	start_pos = _pos;
-
-	hp = 100;
-	power = 100;
-	speed = 2.5;
-	moving = false;
+Player::Player()
+{
+	mPos = { .0f, .0f };
+	mHealth = 100;
+	mPower = 100;
+	mSpeed = 2.5f;
 }
 
-Vec2f Player::get_pos() { return pos; }
+Vec2f Player::getPos() const
+{
+	return mPos;
+}
+void Player::setPos(const Vec2f& pPos)
+{
+	mPos = pPos;
+}
+void Player::move(const Vec2f& pDiff)
+{
+	mPos.x += pDiff.x;
+	mPos.y += pDiff.y;
+}
+int Player::getHealth() const
+{
+	return mHealth;
+}
+void Player::setHealth(int pHealth)
+{
+	mHealth = pHealth;
+}
+int Player::getPower() const
+{
+	return mPower;
+}
+void Player::setPower(int pPower)
+{
+	mPower = pPower;
+}
 
-Vec2f Player::get_delta() { return delta; }
-
-void Player::set_delta(const Vec2f& value) { if (!moving) { delta = value; moving = true; } }
-
+/*
 void Player::move() {
 	if (delta.y < 0.f && pos.y + speed <= start_pos.y + delta.y) { 
 		pos.y = start_pos.y + delta.y; 
@@ -49,3 +72,4 @@ void Player::move() {
 		if (delta.x != 0.f) { pos.x += speed * (std::abs(delta.x) / delta.x); }
 	}
 }
+*/

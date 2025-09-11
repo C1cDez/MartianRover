@@ -3,27 +3,25 @@
 #include "Math.h"
 
 class Player {
-
 public:
-	Player(const Vec2f& _pos = { 0.f, 0.f }, short _tile_size = 30);
+	Player();
 
-	Vec2f get_pos();
-
-	Vec2f get_delta();
+	Vec2f getPos() const;
+	void setPos(const Vec2f& pPos);
 
 	void move();
 
-	void set_delta(const Vec2f &value);
+	int getHealth() const;
+	void setHealth(int pHealth);
+
+	int getPower() const;
+	void setPower(int pPower);
 
 private:
-	Vec2f pos;
-	Vec2f start_pos;
-	Vec2f delta;
-
-
-	short hp;
-	short power;
-	double speed;
-	bool moving;
-
+	Vec2f mPos;
+	Vec2f mDisplacement;
+	int mHealth;
+	int mPower;
+	float mSpeed;
+	bool mMoving;
 };
