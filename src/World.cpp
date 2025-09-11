@@ -20,7 +20,7 @@ Vec2i Chunk::getAbsolutTilePos(const Vec2i& pInChunkPos) const
 tiletype Chunk::getTile(const Vec2i& pPos) const
 {
 	if (isValidInChunkPos(pPos)) return mTiles[pPos.y * G_CHUNK_SIZE + pPos.x];
-	else return ~0;
+	else return -1;
 }
 void Chunk::setTile(const Vec2i& pPos, tiletype pTile)
 {
@@ -29,7 +29,7 @@ void Chunk::setTile(const Vec2i& pPos, tiletype pTile)
 int8 Chunk::getHeight(const Vec2i& pPos) const
 {
 	if (isValidInChunkPos(pPos)) return mHeightMap[pPos.y * G_CHUNK_SIZE + pPos.x];
-	else return (1 << 7);
+	else return -128;
 }
 void Chunk::setHeight(const Vec2i& pPos, int8 pHeight)
 {
