@@ -2,10 +2,12 @@
 
 #include <SFML/Graphics.hpp>
 
+#include "Player.h"
+
 class Game
 {
 public:
-	Game(unsigned int pWidth, unsigned int pHeight, unsigned int pFPS);
+	Game(unsigned int pWidth, unsigned int pHeight, unsigned int pFPSm, unsigned int pTileSize);
 
 	Game(const Game&) = delete;
 	Game& operator=(const Game&) = delete;
@@ -23,25 +25,34 @@ public:
 
 private:
 	bool mRunning;
-	unsigned int mScreenWidth, mScreenHeight;
-	unsigned int mFPS;
+
+	struct RendererConstants
+	{
+		unsigned int mScreenWidth, mScreenHeight;
+		unsigned int mFPS;
+		unsigned int mTileSize;
+	} mRenderer;
+
 	sf::RenderWindow* mWindow;
 	sf::Event mEvent;
+
+	Player mPlayer;
 };
 
-Game::Game(unsigned int pWidth, unsigned int pHeight, unsigned int pFPS)
+Game::Game(unsigned int pWidth, unsigned int pHeight, unsigned int pFPS, unsigned int pTileSize)
 {
 	mRunning = false;
-	mScreenWidth = pWidth;
-	mScreenHeight = pHeight;
-	mFPS = pFPS;
-	mWindow = new sf::RenderWindow{ sf::VideoMode{ mScreenWidth, mScreenHeight }, 
+	mRenderer.mScreenWidth = pWidth;
+	mRenderer.mScreenHeight = pHeight;
+	mRenderer.mFPS = pFPS;
+	mRenderer.mTileSize = pTileSize;
+	mWindow = new sf::RenderWindow{ sf::VideoMode{ mRenderer.mScreenWidth, mRenderer.mScreenHeight },
 		"Martian Rover", sf::Style::Titlebar | sf::Style::Close };
 }
 void Game::init()
 {
 	mRunning = true;
-	mWindow->setFramerateLimit(mFPS);
+	mWindow->setFramerateLimit(mRenderer.mFPS);
 }
 void Game::run()
 {
@@ -77,6 +88,8 @@ void Game::pollEvents()
 			mRunning = false;
 			mWindow->close();
 		}
+
+		if (mEvent.type == sf::Event::KeyPressed && mEvent.key.code == sf::Keyboard::W) std::cout << "AAA";
 	}
 }
 void Game::update()
@@ -91,7 +104,7 @@ void Game::render()
 
 int main()
 {
-	Game game{ 1200, 800, 60 };
+	Game game{ 1200, 800, 60, 30 };
 	game.init();
 	game.run();
 	game.finish();
