@@ -1,13 +1,20 @@
+#define DEBUG
+
 #include <iostream>
 #include <memory>
 
 #include "Renderer.h"
 #include "Player.h"
 
+#ifdef DEBUG
+#define LOG(info) std::cout << info << std::endl
+#endif
+
+
 class Game
 {
 public:
-	Game(unsigned int pWidth, unsigned int pHeight, unsigned int pFPS, int pTileSize);
+	Game(unsigned int pWidth, unsigned int pHeight, unsigned int pFPS, float pTileSize);
 
 	Game(const Game&) = delete;
 	Game& operator=(const Game&) = delete;
@@ -33,16 +40,16 @@ private:
 	std::unique_ptr<PlayerRenderer> mPlayerRenderer;
 };
 
-Game::Game(unsigned int pWidth, unsigned int pHeight, unsigned int pFPS, int pTileSize)
+Game::Game(unsigned int pWidth, unsigned int pHeight, unsigned int pFPS, float pTileSize)
 {
 	mRunning = false;
 	mRenderer.mScreenWidth = pWidth;
 	mRenderer.mScreenHeight = pHeight;
 	mRenderer.mFPS = pFPS;
-	mRenderer.mProjectionMatrix = { pTileSize, 0, 0, pTileSize };
+	mRenderer.mProjectionMatrix = { pTileSize, 0.0f, 0.0f, -pTileSize };
 	mWindow = std::make_unique<sf::RenderWindow>(sf::VideoMode{ mRenderer.mScreenWidth, mRenderer.mScreenHeight },
 		"Martian Rover", sf::Style::Titlebar | sf::Style::Close);
-	mPlayerRenderer = std::make_unique<PlayerRenderer>(&mPlayer);
+	mPlayerRenderer = std::make_unique<PlayerRenderer>(&mPlayer, 10);
 }
 void Game::init()
 {
@@ -50,6 +57,7 @@ void Game::init()
 	mWindow->setFramerateLimit(mRenderer.mFPS);
 	
 	mPlayer.setPos({ 0, 0 });
+	mPlayerRenderer->link(mRenderer);
 }
 void Game::run()
 {
@@ -72,34 +80,45 @@ void Game::pollEvents()
 {
 	while (mWindow->pollEvent(mEvent))
 	{
-		if (mEvent.type == sf::Event::Closed)
-		{
-			mRunning = false;
-			mWindow->close();
-		}
-		if (mEvent.type == sf::Event::KeyPressed && mEvent.key.code == sf::Keyboard::Escape)
+		if (mEvent.type == sf::Event::Closed || 
+			(mEvent.type == sf::Event::KeyPressed && mEvent.key.code == sf::Keyboard::Escape))
 		{
 			mRunning = false;
 			mWindow->close();
 		}
 
-		if (mEvent.type == sf::Event::KeyPressed && mEvent.key.code == sf::Keyboard::W)
-			mPlayer.move({ 0, -1 });
-		if (mEvent.type == sf::Event::KeyPressed && mEvent.key.code == sf::Keyboard::S)
-			mPlayer.move({ 0, 1 });
-		if (mEvent.type == sf::Event::KeyPressed && mEvent.key.code == sf::Keyboard::A)
-			mPlayer.move({ -1, 0 });
-		if (mEvent.type == sf::Event::KeyPressed && mEvent.key.code == sf::Keyboard::D)
-			mPlayer.move({ 1, 0 });
+		if (!mPlayerRenderer->doesMoveAnimPlay())
+		{
+			if (mEvent.type == sf::Event::KeyPressed && mEvent.key.code == sf::Keyboard::W)
+			{
+				mPlayerRenderer->triggerMoveAnimation();
+				mPlayer.move({ 0, 1 });
+			}
+			if (mEvent.type == sf::Event::KeyPressed && mEvent.key.code == sf::Keyboard::S)
+			{
+				mPlayerRenderer->triggerMoveAnimation();
+				mPlayer.move({ 0, -1 });
+			}
+			if (mEvent.type == sf::Event::KeyPressed && mEvent.key.code == sf::Keyboard::A)
+			{
+				mPlayerRenderer->triggerMoveAnimation();
+				mPlayer.move({ -1, 0 });
+			}
+			if (mEvent.type == sf::Event::KeyPressed && mEvent.key.code == sf::Keyboard::D)
+			{
+				mPlayerRenderer->triggerMoveAnimation();
+				mPlayer.move({ 1, 0 });
+			}
+		}
 	}
 }
 void Game::update()
 {
-
+	
 }
 void Game::render()
 {
-	mPlayerRenderer->link(mRenderer);
+	if (mPlayerRenderer->doesMoveAnimPlay()) mPlayerRenderer->updateAnimation(mRenderer);
 	mWindow->draw(mPlayerRenderer->get());
 }
 

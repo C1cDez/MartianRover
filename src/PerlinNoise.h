@@ -19,7 +19,7 @@ private:
 	unsigned int mSeed;
 	unsigned char mPermutations[G_PERMUTATION_AMOUNT];
 
-	Vec2d genPRGradient(int x, int y);
+	Vec2f genPRGradient(int x, int y);
 };
 
 class FractalPerlinNoise
