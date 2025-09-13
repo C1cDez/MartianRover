@@ -28,16 +28,18 @@ struct Vec3f
 };
 
 
-static float quadEaseIn(float a, float b, float t)
+struct Mat2i
 {
-	return (b - a) * t * t + a;
-}
-static float quadEaseOut(float a, float b, float t)
+	int m00, m01, m10, m11;
+	Vec2i operator*(const Vec2i&) const;
+};
+struct Mat2f
 {
-	return (a - b) * (1 - t) * (1 - t) + b;
-}
-static float quadEaseInOut(float a, float b, float t)
-{
-	if (t <= 0.5) return 2 * quadEaseIn(a, b, t);
-	else return 2 * quadEaseOut(a, b, t);
-}
+	float m00, m01, m10, m11;
+	Vec2f operator*(const Vec2f&) const;
+};
+
+
+float quadEaseIn(float a, float b, float t);
+float quadEaseOut(float a, float b, float t);
+float quadEaseInOut(float a, float b, float t);
